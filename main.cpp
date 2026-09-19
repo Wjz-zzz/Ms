@@ -52,6 +52,12 @@ inline void read(T& x) {
     }
 }
 
+inline void write_str(const char* s) {
+    while (*s) {
+        pc(*s++);
+    }
+}
+
 template <typename T>
 inline void write(T x) {
     if (x < 0) {
@@ -76,8 +82,22 @@ int main() {
     __int128 a, b;
     read(a);
     read(b);
+
     write(a + b);
     pc('\n');
+
+    write(a * b);
+    pc('\n');
+
+    if (b == 0) {
+        write_str("Division by zero\n");
+    } else {
+        write(a / b);
+        pc('\n');
+        write(a % b);
+        pc('\n');
+    }
+
     flush();
     return 0;
 }
