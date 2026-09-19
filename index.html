@@ -88,29 +88,6 @@
 
     .stats strong { color: var(--green); font-size: 18px; }
 
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 22px;
-    }
-
-    .filter-btn {
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--ink);
-      border-radius: 999px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .filter-btn.active {
-      background: var(--green);
-      border-color: var(--green);
-      color: #fff;
-    }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -283,15 +260,6 @@
       <div class="stats">当前展示 <strong id="count">0</strong> 条活动</div>
     </header>
 
-    <!-- 顶部类型筛选 -->
-    <nav class="toolbar" id="filters">
-      <button class="filter-btn active" data-type="全部">全部</button>
-      <button class="filter-btn" data-type="竞赛">竞赛</button>
-      <button class="filter-btn" data-type="讲座">讲座</button>
-      <button class="filter-btn" data-type="志愿">志愿</button>
-      <button class="filter-btn" data-type="组队招募">组队招募</button>
-    </nav>
-
     <section class="grid" id="list"></section>
 
     <!-- 页面下方新增活动表单 -->
@@ -358,7 +326,6 @@
     ];
 
     const STORAGE_KEY = "zhuke_campus_activities";
-    let currentFilter = "全部";
     let activities = loadActivities();
 
     /* 优先读取 localStorage，没有则使用内置 26 条 */
@@ -395,15 +362,14 @@
 
     function render() {
       const list = document.getElementById("list");
-      const shown = activities.filter(item => currentFilter === "全部" || item.type === currentFilter);
-      document.getElementById("count").textContent = shown.length;
+      document.getElementById("count").textContent = activities.length;
 
-      if (!shown.length) {
-        list.innerHTML = '<div class="empty">当前筛选下暂无活动</div>';
+      if (!activities.length) {
+        list.innerHTML = '<div class="empty">暂无活动</div>';
         return;
       }
 
-      list.innerHTML = shown.map(item => {
+      list.innerHTML = activities.map(item => {
         const expired = isExpired(item.time);
         return `
           <article class="card${expired ? " expired" : ""}">
@@ -421,15 +387,6 @@
         `;
       }).join("");
     }
-
-    /* 类型筛选按钮 */
-    document.getElementById("filters").addEventListener("click", (e) => {
-      const btn = e.target.closest(".filter-btn");
-      if (!btn) return;
-      currentFilter = btn.dataset.type;
-      document.querySelectorAll(".filter-btn").forEach(el => el.classList.toggle("active", el === btn));
-      render();
-    });
 
     /* 提交表单：发布方固定为学生自发，并持久化 */
     document.getElementById("addForm").addEventListener("submit", (e) => {
