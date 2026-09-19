@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园活动与机会平台 · 珠科</title>
+  <style>
+    :root {
+      --bg: #f4f7f2;
+      --card: #ffffff;
+      --ink: #1f2a24;
+      --muted: #5d6b64;
+      --line: #d7e2d9;
+      --green: #2f6f4e;
+      --green-soft: #e8f4ec;
+      --gold: #c47a1a;
+      --gold-soft: #fff4e3;
+      --red: #c0392b;
+      --shadow: 0 10px 28px rgba(31, 58, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background:
+        radial-gradient(circle at 0 0, #e3f0e6 0, transparent 42%),
+        radial-gradient(circle at 100% 0, #fff1d8 0, transparent 36%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 36px 0 64px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #2f6f4e, #4d9a6a);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stats {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 18px;
+      box-shadow: var(--shadow);
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .stats strong { color: var(--green); font-size: 18px; }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .filter-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 210px;
+    }
+
+    /* 过期活动置灰 */
+    .card.expired {
+      background: #eef0ee;
+      filter: grayscale(0.85);
+      opacity: 0.72;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .title {
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .ended {
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 12px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: #eef3f0;
+      color: #3d5348;
+    }
+
+    .tag.type-竞赛 { background: #e8eefc; color: #2f4f9a; }
+    .tag.type-讲座 { background: #ece7fb; color: #5b3ea8; }
+    .tag.type-志愿 { background: var(--green-soft); color: var(--green); }
+    .tag.type-组队招募 { background: #fdece8; color: #b3472d; }
+
+    /* 官方 / 学生自发 标签配色区分 */
+    .tag.pub-官方 { background: var(--green-soft); color: var(--green); }
+    .tag.pub-学生自发 { background: var(--gold-soft); color: var(--gold); }
+
+    .info {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #31403a;
+    }
+
+    .form-panel {
+      margin-top: 36px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-panel h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 16px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    label.full { grid-column: 1 / -1; }
+
+    input, select, textarea {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--ink);
+      background: #fcfefb;
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .submit {
+      background: var(--green);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 22px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--muted);
+      padding: 40px 0;
+      background: #fff;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+    }
+
+    @media (max-width: 820px) {
+      .grid, form { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">珠科</div>
+        <div>
+          <h1>校园活动与机会平台</h1>
+          <p class="sub">整合讲座、竞赛、志愿活动与组队招募，学生也可自行发布</p>
+        </div>
+      </div>
+      <div class="stats">当前展示 <strong id="count">0</strong> 条活动</div>
+    </header>
+
+    <!-- 顶部类型筛选 -->
+    <nav class="toolbar" id="filters">
+      <button class="filter-btn active" data-type="全部">全部</button>
+      <button class="filter-btn" data-type="竞赛">竞赛</button>
+      <button class="filter-btn" data-type="讲座">讲座</button>
+      <button class="filter-btn" data-type="志愿">志愿</button>
+      <button class="filter-btn" data-type="组队招募">组队招募</button>
+    </nav>
+
+    <section class="grid" id="list"></section>
+
+    <!-- 页面下方新增活动表单 -->
+    <section class="form-panel">
+      <h2>发布新活动</h2>
+      <p class="hint">发布方固定为「学生自发」，提交后会立刻出现在列表中，并写入浏览器本地存储。</p>
+      <form id="addForm">
+        <label>标题
+          <input name="title" required maxlength="40" placeholder="例如：周末骑行组队">
+        </label>
+        <label>类型
+          <select name="type" required>
+            <option value="竞赛">竞赛</option>
+            <option value="讲座">讲座</option>
+            <option value="志愿">志愿</option>
+            <option value="组队招募" selected>组队招募</option>
+          </select>
+        </label>
+        <label>时间
+          <input name="time" type="datetime-local" required>
+        </label>
+        <label>地点
+          <input name="location" required maxlength="30" placeholder="例如：一饭门口 / 线上">
+        </label>
+        <label class="full">描述
+          <textarea name="desc" required maxlength="120" placeholder="简要介绍活动内容和参与方式"></textarea>
+        </label>
+        <div class="actions">
+          <button class="submit" type="submit">提交发布</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    /* 内置 26 条校园活动原始数据 */
+    const activityList = [
+      {id:1,title:"数学建模竞赛宣讲会",type:"竞赛",time:"2026-09-20 19:00",location:"图书馆报告厅",publisher:"官方",desc:"讲解数模比赛流程、组队方式、奖项设置"},
+      {id:2,title:"青年志愿者招新",type:"志愿",time:"2026-09-22 12:00",location:"一饭门口",publisher:"官方",desc:"招募校园志愿者，包含校园维护、敬老院志愿项目"},
+      {id:3,title:"Python入门公益讲座",type:"讲座",time:"2026-09-18 14:30",location:"实验楼203",publisher:"官方",desc:"零基础学习Python，面向大一新生"},
+      {id:4,title:"羽毛球队内组队",type:"组队招募",time:"2026-09-25 17:00",location:"体育馆羽毛球场",publisher:"学生自发",desc:"寻找球友，日常约球，不限水平"},
+      {id:5,title:"互联网+大赛备赛沙龙",type:"竞赛",time:"2026-09-21 20:00",location:"创客空间",publisher:"官方",desc:"分享互联网+项目书写、答辩技巧"},
+      {id:6,title:"图书馆读书分享会",type:"讲座",time:"2026-09-23 15:00",location:"图书馆三楼研讨室",publisher:"官方",desc:"共读人文书籍，自由交流感悟"},
+      {id:7,title:"校园清洁志愿活动",type:"志愿",time:"2026-09-17 08:00",location:"全校校园",publisher:"官方",desc:"清理校园公共区域垃圾，维护校园环境"},
+      {id:8,title:"C++学习小组招人",type:"组队招募",time:"2026-09-26 19:30",location:"线上腾讯会议",publisher:"学生自发",desc:"大一C++刷题互助小组，一起做作业刷题"},
+      {id:9,title:"创新创业比赛培训",type:"竞赛",time:"2026-09-24 18:30",location:"创业孵化中心",publisher:"官方",desc:"指导大学生各类创新创业赛事报名与选题"},
+      {id:10,title:"摄影基础分享沙龙",type:"讲座",time:"2026-09-27 16:00",location:"艺术楼101",publisher:"学生自发",desc:"手机拍照构图、简单修图经验分享"},
+      {id:11,title:"敬老院探访志愿",type:"志愿",time:"2026-09-28 09:00",location:"校外敬老院",publisher:"官方",desc:"陪伴老人聊天表演节目，需要提前报名"},
+      {id:12,title:"前端项目组队招人",type:"组队招募",time:"2026-09-29 21:00",location:"线上",publisher:"学生自发",desc:"寻找队友开发网页小项目，计协二面项目练习"},
+      {id:13,title:"英语演讲比赛报名",type:"竞赛",time:"2026-10-01 14:00",location:"教学楼A栋",publisher:"官方",desc:"全校英语演讲竞赛，欢迎各专业同学报名"},
+      {id:14,title:"考研经验分享会",type:"讲座",time:"2026-10-02 19:00",location:"大礼堂",publisher:"官方",desc:"上岸学长学姐分享备考规划、择校经验"},
+      {id:15,title:"旧书回收志愿活动",type:"志愿",time:"2026-10-03 11:00",location:"二饭广场",publisher:"官方",desc:"回收闲置课本教辅，捐赠给低年级同学"},
+      {id:16,title:"篮球新生杯招募队友",type:"组队招募",time:"2026-10-04 17:30",location:"篮球场",publisher:"学生自发",desc:"新生杯比赛寻找队员，热爱篮球即可"},
+      {id:17,title:"大数据竞赛指导会",type:"竞赛",time:"2026-10-05 20:00",location:"实验楼406",publisher:"官方",desc:"大数据分析竞赛题目解读，工具入门教学"},
+      {id:18,title:"心理健康主题讲座",type:"讲座",time:"2026-10-06 15:00",location:"心理中心报告厅",publisher:"官方",desc:"大学生情绪调节，缓解学业压力"},
+      {id:19,title:"流浪猫投喂志愿小组",type:"志愿",time:"2026-10-07 18:00",location:"校园各个猫点",publisher:"学生自发",desc:"轮值投喂校园流浪猫，爱护小动物"},
+      {id:20,title:"算法刷题搭子招募",type:"组队招募",time:"2026-10-08 20:30",location:"线上",publisher:"学生自发",desc:"每日刷算法题，互相讲解题目，备战蓝桥杯"},
+      {id:21,title:"蓝桥杯竞赛宣讲",type:"竞赛",time:"2026-10-09 19:00",location:"实验楼102",publisher:"官方",desc:"蓝桥杯赛事介绍、报名流程、备考路线"},
+      {id:22,title:"话剧社团公演分享",type:"讲座",time:"2026-10-10 14:00",location:"学生活动中心",publisher:"官方",desc:"话剧演出幕后分享，现场片段展演"},
+      {id:23,title:"社区敬老校外志愿",type:"志愿",time:"2026-10-11 08:30",location:"校外社区",publisher:"官方",desc:"走进社区帮助老年人做简单智能设备教学"},
+      {id:24,title:"影视剪辑学习组队",type:"组队招募",time:"2026-10-12 16:00",location:"线上",publisher:"学生自发",desc:"学习PR剪视频，互相交流作品，一起练习"},
+      {id:25,title:"辩论赛新生赛",type:"竞赛",time:"2026-10-13 18:00",location:"教学楼B栋",publisher:"官方",desc:"新生辩论赛开赛，欢迎到场观赛"},
+      {id:26,title:"乐器交流小型沙龙",type:"讲座",time:"2026-10-14 15:30",location:"学生活动中心",publisher:"学生自发",desc:"吉他、口琴等乐器爱好者交流，即兴演奏"}
+    ];
+
+    const STORAGE_KEY = "zhuke_campus_activities";
+    let currentFilter = "全部";
+    let activities = loadActivities();
+
+    /* 优先读取 localStorage，没有则使用内置 26 条 */
+    function loadActivities() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length) return parsed;
+        }
+      } catch (e) {}
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(activityList));
+      return activityList.slice();
+    }
+
+    function saveActivities() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+    }
+
+    /* 对比系统当前时间，判断活动是否已过期 */
+    function isExpired(timeStr) {
+      const t = new Date(String(timeStr).replace(/-/g, "/"));
+      if (Number.isNaN(t.getTime())) return false;
+      return t.getTime() < Date.now();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function render() {
+      const list = document.getElementById("list");
+      const shown = activities.filter(item => currentFilter === "全部" || item.type === currentFilter);
+      document.getElementById("count").textContent = shown.length;
+
+      if (!shown.length) {
+        list.innerHTML = '<div class="empty">当前筛选下暂无活动</div>';
+        return;
+      }
+
+      list.innerHTML = shown.map(item => {
+        const expired = isExpired(item.time);
+        return `
+          <article class="card${expired ? " expired" : ""}">
+            <div class="card-top">
+              <h3 class="title">${escapeHtml(item.title)}</h3>
+              ${expired ? '<span class="ended">【活动已结束】</span>' : ""}
+            </div>
+            <div class="meta">
+              <span class="tag type-${escapeHtml(item.type)}">${escapeHtml(item.type)}</span>
+              <span class="tag pub-${escapeHtml(item.publisher)}">${escapeHtml(item.publisher)}</span>
+            </div>
+            <div class="info">时间：${escapeHtml(item.time)}<br>地点：${escapeHtml(item.location)}</div>
+            <p class="desc">${escapeHtml(item.desc)}</p>
+          </article>
+        `;
+      }).join("");
+    }
+
+    /* 类型筛选按钮 */
+    document.getElementById("filters").addEventListener("click", (e) => {
+      const btn = e.target.closest(".filter-btn");
+      if (!btn) return;
+      currentFilter = btn.dataset.type;
+      document.querySelectorAll(".filter-btn").forEach(el => el.classList.toggle("active", el === btn));
+      render();
+    });
+
+    /* 提交表单：发布方固定为学生自发，并持久化 */
+    document.getElementById("addForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      const timeVal = data.get("time");
+      const formatted = timeVal ? timeVal.replace("T", " ") : "";
+
+      const nextId = activities.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1;
+      activities.push({
+        id: nextId,
+        title: String(data.get("title")).trim(),
+        type: String(data.get("type")),
+        time: formatted,
+        location: String(data.get("location")).trim(),
+        publisher: "学生自发",
+        desc: String(data.get("desc")).trim()
+      });
+
+      saveActivities();
+      form.reset();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
