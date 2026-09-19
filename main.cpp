@@ -1,8 +1,11 @@
 #include <iostream>
 
 int main() {
-    double a, b;
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    long long a, b;
     std::cin >> a >> b;
-    std::cout << a + b << std::endl;
+    std::cout << a + b << '\n';
     return 0;
 }
